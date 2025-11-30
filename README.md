@@ -11,34 +11,58 @@ This template offers:
 - ✅ No unwanted Unity-generated files in version control
 - ✅ Ideal as a starting point for new Unity projects with Git version control
 
-## Usage
+## Quick Setup Guide
 
-### Prerequisites
-Before you begin, make sure the following is installed:
-- [Git](https://git-scm.com/downloads)
-- [Git LFS](https://git-lfs.github.com/)
-- [Unity Hub](https://unity.com/download) with a current Unity version
+Follow these steps to set up your Unity project with Git LFS:
 
-### Installation
+### 1. Create and Clone Your Repository
+- Create a new repository on GitHub
+- Clone it locally to your computer:
+  ```bash
+  git clone https://github.com/your-username/your-repo-name.git
+  cd your-repo-name
+  ```
 
-1. **Clone repository**
-   ```bash
-   git clone <Your-Repository-URL>
-   cd <Your-Project-Name>
-   ```
+### 2. Set Up Your Unity Project
+- Create a new Unity project in this folder, OR
+- Move your existing Unity project into this folder
 
-2. **Initialize Git LFS**
-   ```bash
-   git lfs install
-   ```
+### 3. Copy Template Files
+```bash
+git clone https://github.com/LeosGmbH/unity-github-lfs-template.git
+```
 
-3. **Copy template files**
-   Copy the following files to your new Unity project:
-   - `.gitattributes` - For proper handling of binary files with Git LFS
-   - `.gitignore` - Ignores Unity-specific files that should not be versioned
+Then copy thes files form `/ProjectTemplateFiles/`:
+- `/.gitattributes.template` → `.gitattributes` (in your project root)
+- `/.gitignore.template` → `.gitignore` (in your project root)
+- `/Assets/` → `Assets/` (merge with your existing Assets folder)
 
-4. **Adopt project structure (optional)**
-   The `Assets` folder contains a recommended project structure for your Unity project. You can copy this to your project to start immediately with a clean folder structure.
+
+**Note:** Remove the `.template` suffix from the 2 files.
+
+### 4. Remove .gitkeep Files
+After copying the folder structure, remove all `.gitkeep` files:
+```bash
+# On Windows
+del /s /q Assets\.gitkeep
+# On macOS/Linux
+find Assets -name ".gitkeep" -delete
+```
+
+### 5. Initialize Git LFS
+```bash
+git lfs install
+```
+
+### 6. Commit and Push
+```bash
+git add .
+git commit -m "Initial Unity project setup with Git LFS"
+git push
+```
+
+### Clean Up (if you cloned the template)
+Delete the cloned 'unity-github-lfs-template.git' project as you no longer need it.
 
 ## Files in Detail
 
@@ -68,26 +92,12 @@ The included folder structure in the `Assets` directory provides a logical organ
 - **Scripts/** - C# scripts, organized by functionality
 - **UI/** - User interface elements
 
-### Remove .gitkeep files
-The folder structure contains `.gitkeep` files to version empty folders in Git. After you have adopted the project, these files can be removed:
+**Note:** The folder structure contains `.gitkeep` files to version empty folders in Git. These are automatically removed in step 4 of the setup guide.
 
-**Important Note:** Run this command while you are in the directory where the `Assets` folder is located (not in the `Assets` folder itself).
+## Important Notes
 
-```bash
-del /s /q Assets\.gitkeep
-```
-
-This command recursively deletes all `.gitkeep` files in the subdirectories of `Assets`.
-
-## Next Steps
-
-1. Create a new repository on GitHub
-2. Initialize Git in your project directory:
-   ```bash
-   git init
-   git remote add origin <Your-Repository-URL>
-   ```
-3. Make your first commit and push your changes
+- **Git LFS**: Make sure Git LFS is installed before working with large assets
+- **.gitkeep files**: Remove these after you start adding content to folders
 
 ## License
 

@@ -1,83 +1,98 @@
-# Unity Projekt Template mit Git LFS
+# Unity Project Template with Git LFS
 
-Diese Repository dient als Vorlage für neue Unity-Projekte mit bereits konfigurierter Git LFS-Unterstützung. Es bietet eine saubere Projektstruktur und optimierte Konfigurationsdateien für eine effiziente Versionskontrolle von Unity-Projekten.
+This repository serves as a template for new Unity projects with pre-configured Git LFS support. It provides a clean project structure and optimized configuration files for efficient version control of Unity projects.
 
-## Zweck
+## Purpose
 
-Dieses Template bietet:
-- ✅ Vorkonfiguriertes Git LFS für Unity-Asset-Typen
-- ✅ Optimierte `.gitignore` für Unity-Projekte
-- ✅ Klare, logische Projektstruktur
-- ✅ Keine unerwünschten Unity-generierten Dateien in der Versionskontrolle
-- ✅ Ideal als Ausgangspunkt für neue Unity-Projekte mit Git-Versionskontrolle
+This template offers:
+- ✅ Pre-configured Git LFS for Unity asset types
+- ✅ Optimized `.gitignore` for Unity projects
+- ✅ Clear, logical project structure
+- ✅ No unwanted Unity-generated files in version control
+- ✅ Ideal as a starting point for new Unity projects with Git version control
 
-## Verwendung
+## Usage
 
-### Voraussetzungen
-Bevor Sie beginnen, stellen Sie sicher, dass folgendes installiert ist:
+### Prerequisites
+Before you begin, make sure the following is installed:
 - [Git](https://git-scm.com/downloads)
 - [Git LFS](https://git-lfs.github.com/)
-- [Unity Hub](https://unity.com/download) mit einer aktuellen Unity-Version
+- [Unity Hub](https://unity.com/download) with a current Unity version
 
 ### Installation
 
-1. **Repository klonen**
+1. **Clone repository**
    ```bash
-   git clone <Ihre-Repository-URL>
-   cd <Ihr-Projekt-Name>
+   git clone <Your-Repository-URL>
+   cd <Your-Project-Name>
    ```
 
-2. **Git LFS initialisieren**
+2. **Initialize Git LFS**
    ```bash
    git lfs install
    ```
 
-3. **Template-Dateien kopieren**
-   Kopieren Sie die folgenden Dateien in Ihr neues Unity-Projekt:
-   - `.gitattributes` - Für die korrekte Handhabung von Binärdateien mit Git LFS
-   - `.gitignore` - Ignoriert Unity-spezifische Dateien, die nicht versioniert werden sollten
+3. **Copy template files**
+   Copy the following files to your new Unity project:
+   - `.gitattributes` - For proper handling of binary files with Git LFS
+   - `.gitignore` - Ignores Unity-specific files that should not be versioned
 
-4. **Projektstruktur übernehmen (optional)**
-   Der `Assets`-Ordner enthält eine empfohlene Projektstruktur für Ihr Unity-Projekt. Sie können diesen in Ihr Projekt kopieren, um sofort mit einer sauberen Ordnerstruktur zu beginnen.
+4. **Adopt project structure (optional)**
+   The `Assets` folder contains a recommended project structure for your Unity project. You can copy this to your project to start immediately with a clean folder structure.
 
-## Dateien im Detail
+## Files in Detail
 
 ### `.gitattributes`
-Diese Datei konfiguriert Git LFS für gängige Unity-Dateitypen wie:
-- Texturen (PNG, JPG, TGA, PSD)
-- Audiodateien (WAV, OGG, MP3)
-- 3D-Modelle (FBX, OBJ)
-- Unity-spezifische Dateien (Scene, Prefab, Material, etc.)
+This file configures Git LFS for common Unity file types such as:
+- Textures (PNG, JPG, TGA, PSD)
+- Audio files (WAV, OGG, MP3)
+- 3D models (FBX, OBJ)
+- Unity-specific files (Scene, Prefab, Material, etc.)
 
 ### `.gitignore`
-Ignoriert automatisch generierte Dateien und temporäre Dateien, die nicht in der Versionskontrolle gespeichert werden sollten, wie z.B.:
-- Temporäre Build-Dateien
-- Cache-Ordner
-- IDE-spezifische Dateien
-- Lokale Benutzereinstellungen
+Ignores automatically generated files and temporary files that should not be stored in version control, such as:
+- Temporary build files
+- Cache folders
+- IDE-specific files
+- Local user settings
 
-### `Assets/`-Struktur
-Die mitgelieferte Ordnerstruktur im `Assets`-Verzeichnis bietet eine logische Organisation für Ihr Projekt:
-- **Animations/** - Für Animationen und Animator-Controller
-- **Audio/** - Unterteilt in Music, SFX und Voice
-- **Editor/** - Für benutzerdefinierte Editor-Skripte
-- **Materials/** - Materialdateien
-- **Models/** - 3D-Modelle
-- **Prefabs/** - Unity-Prefabs
-- **Scenes/** - Szenen, aufgeteilt in Core und Levels
-- **Scripts/** - C#-Skripte, organisiert nach Funktionalität
-- **UI/** - Benutzeroberflächen-Elemente
+### `Assets/` Structure
+The included folder structure in the `Assets` directory provides a logical organization for your project:
+- **Animations/** - For animations and animator controllers
+- **Audio/** - Divided into Music, SFX and Voice
+- **Editor/** - For custom editor scripts
+- **Materials/** - Material files
+- **Models/** - 3D models
+- **Prefabs/** - Unity prefabs
+- **Scenes/** - Scenes, divided into Core and Levels
+- **Scripts/** - C# scripts, organized by functionality
+- **UI/** - User interface elements
 
-## Nächste Schritte
+### Remove .gitkeep files
+The folder structure contains `.gitkeep` files to version empty folders in Git. After you have adopted the project, these files can be removed:
 
-1. Erstellen Sie ein neues Repository auf GitHub
-2. Initialisieren Sie Git in Ihrem Projektverzeichnis:
+**Important Note:** Run this command while you are in the directory where the `Assets` folder is located (not in the `Assets` folder itself).
+
+```bash
+del /s /q Assets\.gitkeep
+```
+
+This command recursively deletes all `.gitkeep` files in the subdirectories of `Assets`.
+
+## Next Steps
+
+1. Create a new repository on GitHub
+2. Initialize Git in your project directory:
    ```bash
    git init
-   git remote add origin <Ihre-Repository-URL>
+   git remote add origin <Your-Repository-URL>
    ```
-3. Führen Sie einen ersten Commit durch und pushen Sie Ihre Änderungen
+3. Make your first commit and push your changes
 
-## Lizenz
+## License
 
-Diese Vorlage kann frei verwendet, modifiziert und verteilt werden.
+This template is licensed under the MIT License and can be freely used, modified and distributed.
+
+## Contributing
+
+This repository is open to contributions and improvements. Feel free to submit issues, feature requests, or pull requests to enhance this Unity project template for the community.

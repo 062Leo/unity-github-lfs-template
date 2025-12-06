@@ -40,6 +40,8 @@ Then copy thes files form `/ProjectTemplateFiles/`:
 
 **Note:** Remove the `.template` suffix from the 2 files.
 
+**Optional:** You don't have to clone the entire repository. You can also download just the `ProjectTemplateFiles` folder or its contents directly.
+
 ### 4. Remove .gitkeep Files
 After copying the folder structure, remove all `.gitkeep` files:
 ```bash
@@ -93,6 +95,12 @@ The included folder structure in the `Assets` directory provides a logical organ
 - **UI/** - User interface elements
 
 **Note:** The folder structure contains `.gitkeep` files to version empty folders in Git. These are automatically removed in step 4 of the setup guide.
+
+### `list.py` (Optional)
+A utility script that creates a list of all file types found in the directory where the script is located. This can be useful for analyzing the file types in your project structure.
+- Located in `/ProjectTemplateFiles/`
+- Run with: `python list.py`
+- Through this list you can extend the `.gitattributes.template` and `.gitignore.template` files with additional file types found in your project
 
 ## Important Notes
 

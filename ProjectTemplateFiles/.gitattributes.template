@@ -13,15 +13,34 @@
 *.tif filter=lfs diff=lfs merge=lfs -text
 *.tiff filter=lfs diff=lfs merge=lfs -text
 
-# Materials & scriptable assets
-*.prefab filter=lfs diff=lfs merge=lfs -text
-*.mat filter=lfs diff=lfs merge=lfs -text
-*.asset filter=lfs diff=lfs merge=lfs -text
+# Unity text assets (Asset Serialization: Force Text)
+# These stay text in Git on purpose: readable diffs, three way merge, UnityYAMLMerge.
+# Never route them through LFS, an LFS pointer cannot be diffed or merged.
+# eol=lf because Unity writes these files with LF on every platform, Windows included.
+*.unity text eol=lf merge=unityyamlmerge
+*.prefab text eol=lf merge=unityyamlmerge
+*.meta text eol=lf merge=unityyamlmerge
+*.asset text eol=lf merge=unityyamlmerge
+*.mat text eol=lf merge=unityyamlmerge
+*.anim text eol=lf merge=unityyamlmerge
+*.controller text eol=lf merge=unityyamlmerge
+*.overrideController text eol=lf merge=unityyamlmerge
+*.physicMaterial text eol=lf merge=unityyamlmerge
+*.physicsMaterial2D text eol=lf merge=unityyamlmerge
+*.mask text eol=lf merge=unityyamlmerge
+*.playable text eol=lf merge=unityyamlmerge
+*.mixer text eol=lf merge=unityyamlmerge
+*.preset text eol=lf merge=unityyamlmerge
+*.renderTexture text eol=lf merge=unityyamlmerge
+*.spriteatlas text eol=lf merge=unityyamlmerge
+*.terrainlayer text eol=lf merge=unityyamlmerge
+*.shadervariants text eol=lf merge=unityyamlmerge
+*.fontsettings text eol=lf merge=unityyamlmerge
+*.lighting text eol=lf merge=unityyamlmerge
 
-# Scenes & animation
-*.unity filter=lfs diff=lfs merge=lfs -text
-*.anim filter=lfs diff=lfs merge=lfs -text
-*.controller filter=lfs diff=lfs merge=lfs -text
+# Baked lighting data is binary even under Force Text (Unity issue 1211605),
+# so it is the one *.asset file that belongs in LFS.
+LightingData.asset filter=lfs diff=lfs merge=lfs -text
 
 # 3D models
 *.fbx filter=lfs diff=lfs merge=lfs -text
@@ -40,6 +59,10 @@
 
 # Documentation
 *.pdf filter=lfs diff=lfs merge=lfs -text
+
+# Fonts
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.otf filter=lfs diff=lfs merge=lfs -text
 
 # Packages & archives
 *.unitypackage filter=lfs diff=lfs merge=lfs -text

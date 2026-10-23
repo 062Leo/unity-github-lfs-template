@@ -66,6 +66,85 @@ git push
 ### Clean Up (if you cloned the template)
 Delete the cloned 'unity-github-lfs-template.git' project as you no longer need it.
 
+## Unity Settings You Have to Change
+
+Do this inside Unity **before the first commit** (step 6). These settings decide whether the
+repository is usable by more than one person, and whether `.gitattributes` does anything at all.
+
+*Checked against the Unity 6.6 (6000.6) manual. The menu paths are the same in Unity 6.0 LTS and
+in the 2021 to 2023 versions, only the defaults differ.*
+
+### 1. Asset Serialization: `Force Text`
+`Edit > Project Settings > Editor > Asset Serialization > Mode: Force Text`
+
+Writes scenes, prefabs, materials and `.asset` files as YAML text instead of binary. Without it
+every one of those files is an opaque blob: no readable diff, no three way merge, no merge tool.
+`Force Text` is the default in Unity 6; the other options are `Mixed` (new assets become binary)
+and `Force Binary`. Check it anyway, projects that started in an older Editor often carry `Mixed`.
+
+### 2. Version Control: `Visible Meta Files`
+`Edit > Project Settings > Version Control > Mode: Visible Meta Files`
+
+Every asset has a `.meta` file next to it holding its GUID and its import settings. Visible means
+the files are on disk where Git can see and commit them. Commit the `.meta` files together with
+their asset, always. A missing `.meta` file breaks every reference to that asset for everyone else.
+Pick `Perforce` only if you actually use Perforce; `Hidden Meta Files` is for projects without
+version control.
+
+### 3. Merging scenes and prefabs
+Text serialization only makes a merge *possible*. Unity ships `UnityYAMLMerge` to actually do it,
+and with plain Git you wire it in yourself (the `Smart Merge` dropdown in the Version Control
+settings only applies to Perforce and Unity Version Control):
+
+```ini
+# in .git/config of your project, or in ~/.gitconfig for all projects
+[merge]
+    tool = unityyamlmerge
+[mergetool "unityyamlmerge"]
+    trustExitCode = false
+    cmd = 'C:/Program Files/Unity/Hub/Editor/<version>/Editor/Data/Tools/UnityYAMLMerge.exe' merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
+```
+
+It merges `.unity`, `.prefab` and `.meta` files. `.asset`, `.mat` and `.controller` fall through to
+your normal merge tool unless you pass `--force`.
+
+**The cheaper rule, and the one that actually holds:** do not edit the same scene or prefab in
+parallel. Split a scene into additive sub scenes or prefabs per person, or agree who owns a scene
+right now. A merged scene file is valid YAML long before it is a working scene.
+
+### 4. What goes through LFS, and the price for text assets
+LFS earns its keep on binaries: textures, audio, 3D models, video, archives, native plugins. Those
+lines in `.gitattributes` are the reason to use LFS at all.
+
+`.gitattributes` in this template also routes the **text** assets through LFS:
+
+```
+*.unity *.prefab *.mat *.asset *.anim *.controller
+```
+
+A file in LFS is a pointer in Git history, marked `-text`. So for these you get no diff, no merge
+and no `UnityYAMLMerge`, only "keep mine or keep theirs" on every conflict. That is the right trade
+for a solo project or a team that locks files, and the wrong one for a team that merges branches.
+
+If you want mergeable scenes and prefabs, delete those six lines from your `.gitattributes` (the
+"Materials & scriptable assets" and "Scenes & animation" blocks) and keep setting 1 and 3. Decide
+this **before** the first commit; moving files in or out of LFS later rewrites history.
+
+### 5. Folders that have to stay ignored
+Unity regenerates these per machine, they are large and they conflict constantly. The shipped
+`.gitignore` already covers them:
+
+| Folder | Why |
+|---|---|
+| `Library/` | local cache of imported assets, rebuilt from `Assets/` |
+| `Temp/` | cleared every time the Editor closes |
+| `Logs/`, `obj/`, `Build/`, `Builds/` | logs, intermediate compiler output, build artifacts |
+| `UserSettings/` | your personal layout and preferences, not the project's |
+
+These three must be **committed**, otherwise the clone is not the same project:
+`Assets/`, `Packages/` (the manifest pins the package versions) and `ProjectSettings/` (which is
+where settings 1 and 2 are stored, so everyone gets them from the clone).
+
 ## Files in Detail
 
 ### `.gitattributes`

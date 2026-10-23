@@ -83,16 +83,39 @@ Ignores automatically generated files and temporary files that should not be sto
 - Local user settings
 
 ### `Assets/` Structure
-The included folder structure in the `Assets` directory provides a logical organization for your project:
-- **Animations/** - For animations and animator controllers
-- **Audio/** - Divided into Music, SFX and Voice
-- **Editor/** - For custom editor scripts
-- **Materials/** - Material files
-- **Models/** - 3D models
-- **Prefabs/** - Unity prefabs
-- **Scenes/** - Scenes, divided into Core and Levels
-- **Scripts/** - C# scripts, organized by functionality
-- **UI/** - User interface elements
+The Unity Project window sorts folders alphabetically. The number prefix turns that into an order
+you chose: what you open daily on top, the content you only fill once at the bottom.
+
+```
+Assets/
+  01_Scenes/
+  02_Scripts/        01_Core/  02_Managers/  03_Gameplay/  04_UI/  05_Utils/
+  03_Prefabs/
+  04_Models/
+  05_Materials/
+  06_Shaders/
+  07_Textures/
+  08_Sprites/
+  09_Animations/     animation clips and animator controllers
+  10_Audio/          01_Music/  02_SFX/  03_Voice/
+  11_UI/             01_Fonts/  02_Icons/
+  12_Settings/       render pipeline, input, package settings
+  Editor/            editor scripts, reserved name, never numbered
+  Resources/         runtime Resources.Load, reserved name, never numbered
+```
+
+**The convention, for anyone adding a folder:**
+1. Two digits, underscore, English name: `13_Localization`. Two digits so `10_` sorts after `09_`.
+2. Numbers are a sort position, not an ID. Insert where the folder belongs and renumber the
+   folders after it. Rename in the Unity Project window, not in Explorer, then the `.meta` files
+   and all asset references follow along.
+3. Subfolders get their own `01_` upwards, counted fresh per parent.
+4. **Unity's reserved folder names stay unprefixed:** `Editor`, `Resources`, `Plugins`, `Gizmos`,
+   `StreamingAssets`, `Editor Default Resources`. Their special behaviour is tied to the exact
+   name, so `01_Resources` is just an ordinary folder and `Resources.Load` will not find anything
+   in it. Letters sort after digits, so these end up at the bottom of the list by themselves.
+5. Two digits are enough. If you ever need a 100th top level folder, the problem is not the
+   numbering.
 
 **Note:** The folder structure contains `.gitkeep` files to version empty folders in Git. These are automatically removed in step 4 of the setup guide.
 

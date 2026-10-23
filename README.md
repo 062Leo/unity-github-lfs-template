@@ -105,30 +105,47 @@ settings only applies to Perforce and Unity Version Control):
     cmd = 'C:/Program Files/Unity/Hub/Editor/<version>/Editor/Data/Tools/UnityYAMLMerge.exe' merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
 ```
 
-It merges `.unity`, `.prefab` and `.meta` files. `.asset`, `.mat` and `.controller` fall through to
-your normal merge tool unless you pass `--force`.
+`git mergetool` is what invokes it, after a `git merge` left a conflict. UnityYAMLMerge itself
+merges `.unity`, `.prefab` and `.meta` files; `.asset`, `.mat` and `.controller` are handed to a
+fallback merge tool unless you pass `--force`. The `merge=unityyamlmerge` attribute in
+`.gitattributes` marks the file types that belong on this path.
 
 **The cheaper rule, and the one that actually holds:** do not edit the same scene or prefab in
 parallel. Split a scene into additive sub scenes or prefabs per person, or agree who owns a scene
 right now. A merged scene file is valid YAML long before it is a working scene.
 
-### 4. What goes through LFS, and the price for text assets
-LFS earns its keep on binaries: textures, audio, 3D models, video, archives, native plugins. Those
-lines in `.gitattributes` are the reason to use LFS at all.
+### 4. What goes through LFS, and what must not
+LFS earns its keep on binaries: textures, audio, 3D models, video, fonts, archives, native plugins.
+Those lines in `.gitattributes` are the reason to use LFS at all.
 
-`.gitattributes` in this template also routes the **text** assets through LFS:
+**Text assets stay out of LFS.** A file in LFS is a pointer in Git history, marked `-text`, so Git
+cannot diff it and `UnityYAMLMerge` never sees it: every scene change becomes a binary conflict
+that one side has to win whole. That would undo settings 1 and 3 above. The shipped
+`.gitattributes` therefore gives the YAML types text handling instead:
 
 ```
-*.unity *.prefab *.mat *.asset *.anim *.controller
+*.unity *.prefab *.meta *.asset *.mat *.anim *.controller *.overrideController ...
+    text eol=lf merge=unityyamlmerge
 ```
 
-A file in LFS is a pointer in Git history, marked `-text`. So for these you get no diff, no merge
-and no `UnityYAMLMerge`, only "keep mine or keep theirs" on every conflict. That is the right trade
-for a solo project or a team that locks files, and the wrong one for a team that merges branches.
+`eol=lf` because Unity writes these files with LF on every platform, Windows included. Without it,
+Git would hand you CRLF on checkout and Unity would rewrite the whole file on the next save.
 
-If you want mergeable scenes and prefabs, delete those six lines from your `.gitattributes` (the
-"Materials & scriptable assets" and "Scenes & animation" blocks) and keep setting 1 and 3. Decide
-this **before** the first commit; moving files in or out of LFS later rewrites history.
+One exception: `LightingData.asset` is written binary even under `Force Text`, by design, so it is
+the single `.asset` file the template routes to LFS.
+
+**The tradeoff that stays.** A text asset in Git is a text asset in Git: a 40 MB terrain or a big
+monolithic scene is committed in full on every change, diffs slowly and merges badly, and LFS would
+have kept the clone small. Text handling buys you readable history and real merges, it does not
+make huge assets cheap. The answer is smaller files, split scenes and prefabs per person, not LFS.
+
+Check your own file after copying or editing it, from your project root:
+
+```powershell
+pwsh -File <path to template>/ProjectTemplateFiles/check-gitattributes.ps1
+```
+
+Decide this **before** the first commit; moving files in or out of LFS later rewrites history.
 
 ### 5. Folders that have to stay ignored
 Unity regenerates these per machine, they are large and they conflict constantly. The shipped
@@ -148,11 +165,15 @@ where settings 1 and 2 are stored, so everyone gets them from the clone).
 ## Files in Detail
 
 ### `.gitattributes`
-This file configures Git LFS for common Unity file types such as:
+Routes the binary file types through Git LFS:
 - Textures (PNG, JPG, TGA, PSD)
 - Audio files (WAV, OGG, MP3)
 - 3D models (FBX, OBJ)
-- Unity-specific files (Scene, Prefab, Material, etc.)
+- Video, fonts, archives, native plugins (DLL, SO)
+
+And keeps Unity's text-serialized assets out of LFS, as `text eol=lf merge=unityyamlmerge`:
+scenes, prefabs, `.meta`, materials, animations, animator controllers and the other YAML types.
+See [What goes through LFS, and what must not](#4-what-goes-through-lfs-and-what-must-not) for why.
 
 ### `.gitignore`
 Ignores automatically generated files and temporary files that should not be stored in version control, such as:
@@ -174,6 +195,13 @@ The included folder structure in the `Assets` directory provides a logical organ
 - **UI/** - User interface elements
 
 **Note:** The folder structure contains `.gitkeep` files to version empty folders in Git. These are automatically removed in step 4 of the setup guide.
+
+### `check-gitattributes.ps1`
+Reads a `.gitattributes` and reports every pattern that is a text-serialized Unity asset type and
+still carries LFS attributes. Plain PowerShell, no dependency. Exit code 0 clean, 1 findings, so it
+also works in a pre-commit hook or in CI.
+- Located in `/ProjectTemplateFiles/`
+- Run with: `pwsh -File check-gitattributes.ps1` (default `-Path .gitattributes`)
 
 ### `list.py` (Optional)
 A utility script that creates a list of all file types found in the directory where the script is located. This can be useful for analyzing the file types in your project structure.
